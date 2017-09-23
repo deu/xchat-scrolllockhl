@@ -3,18 +3,25 @@
 import xchat, threading, os, time
 
 __module_name__ = 'Scroll Lock HL'
-__module_version__ = '1.1'
+__module_version__ = '1.2'
 __module_description__ = 'Highlights make the scroll lock LED blink.'
 
-duration = 10
+NUMBLINKS = 10
+INTERVAL = 0.5
+
+alreadyBlinking = False
 
 class BlinkingThread(threading.Thread):
     def run(self):
-        for i in range(0, duration):
-            os.system('xset led named "Scroll Lock"')
-            time.sleep(0.5)
-            os.system('xset -led named "Scroll Lock"')
-            time.sleep(0.5)
+        global alreadyBlinking
+        if not alreadyBlinking:
+            alreadyBlinking = True
+            for i in range(0, NUMBLINKS):
+                os.system('xset led named "Scroll Lock"')
+                time.sleep(INTERVAL)
+                os.system('xset -led named "Scroll Lock"')
+                time.sleep(INTERVAL)
+            alreadyBlinking = False
 
 def blink(word, word_eol, userdata):
     BlinkingThread().start()
